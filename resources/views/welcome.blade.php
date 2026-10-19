@@ -2,6 +2,7 @@
 @section('content')
     <div class="container mx-auto">
         <h1>Home page</h1>
+        {{ $posts->links() }}
         @foreach ($posts as $post)
             <div class="card bg-base-100 shadow-sm my-2">
                 {{-- <figure>
@@ -16,5 +17,6 @@
                 </div>
             </div>
         @endforeach
+        {{ $posts->links() }}
     </div>
 @endsection
