@@ -5,6 +5,12 @@
             <div class="card-body">
                 <h1 class="card-title">@lang('Log in')</h1>
 
+                @if (session('status'))
+                    <div role="alert" class="alert alert-success alert-soft">
+                        <span>{{ session('status') }}</span>
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
