@@ -36,7 +36,17 @@
             <li><a>Item 3</a></li>
         </ul>
     </div>
-    <div class="navbar-end">
-        <a class="btn">Button</a>
+    <div class="navbar-end gap-2">
+        @auth
+            <a class="btn btn-ghost" href="{{ route('dashboard') }}">@lang('Dashboard')</a>
+            <a class="btn btn-ghost" href="{{ route('profile.edit') }}">@lang('Profile')</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn">@lang('Log Out')</button>
+            </form>
+        @else
+            <a class="btn btn-ghost" href="{{ route('login') }}">@lang('Log in')</a>
+            <a class="btn btn-primary" href="{{ route('register') }}">@lang('Register')</a>
+        @endauth
     </div>
 </div>
