@@ -1,11 +1,16 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [PublicController::class, 'index']);
-Route::get('/buttons', [PublicController::class, 'buttons']);
+Route::get('/', [PublicController::class, 'index'])->name('home');
+Route::get('/buttons', [PublicController::class, 'buttons'])->name('buttons');
+Route::get('/post/{post}', [PublicController::class, 'post'])->name('post');
+Route::get('/user/{user}', [PublicController::class, 'user'])->name('user');
+
+Route::resource('/admin/posts', PostController::class)->middleware('auth');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

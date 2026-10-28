@@ -8,45 +8,57 @@
                 </svg>
             </div>
             <ul tabindex="-1" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                <li><a href="/buttons">Buttons</a></li>
-                <li>
-                    <a>Parent</a>
-                    <ul class="p-2">
-                        <li><a>Submenu 1</a></li>
-                        <li><a>Submenu 2</a></li>
-                    </ul>
-                </li>
+                <li><a href="{{ route('buttons') }}">Buttons</a></li>
+                @auth
+                    <li>
+                        <a>Admin</a>
+                        <ul class="p-2">
+                            <li><a href="{{ route('posts.index') }}">Posts</a></li>
+                            <li><a>Submenu 2</a></li>
+                        </ul>
+                    </li>
+                @endauth
                 <li><a>Item 3</a></li>
             </ul>
         </div>
-        <a class="btn btn-ghost text-xl" href="/">{{ config('app.name') }}</a>
+        <a class="btn btn-ghost text-xl" href="{{ route('home') }}">{{ config('app.name') }}</a>
     </div>
     <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-            <li><a href="/buttons">Buttons</a></li>
-            <li>
-                <details>
-                    <summary>Parent</summary>
-                    <ul class="p-2 bg-base-100 w-40 z-1">
-                        <li><a>Submenu 1</a></li>
-                        <li><a>Submenu 2</a></li>
-                    </ul>
-                </details>
-            </li>
+            <li><a href="{{ route('buttons') }}">Buttons</a></li>
+            @auth
+                <li>
+                    <details>
+                        <summary>Admin</summary>
+                        <ul class="p-2 bg-base-100 w-40 z-1">
+                            <li><a href="{{ route('posts.index') }}">Posts</a></li>
+                            <li><a>Submenu 2</a></li>
+                        </ul>
+                    </details>
+                </li>
+            @endauth
             <li><a>Item 3</a></li>
         </ul>
     </div>
     <div class="navbar-end gap-2">
         @auth
-            <a class="btn btn-ghost" href="{{ route('dashboard') }}">@lang('Dashboard')</a>
-            <a class="btn btn-ghost" href="{{ route('profile.edit') }}">@lang('Profile')</a>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn">@lang('Log Out')</button>
-            </form>
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn m-1">{{ auth()->user()->name }}</div>
+                <ul tabindex="-1" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                    <li><a href="{{ route('profile.edit') }}">Profile</a></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button>Logout</button>
+                        </form>
+                    </li>
+
+                </ul>
+            </div>
         @else
-            <a class="btn btn-ghost" href="{{ route('login') }}">@lang('Log in')</a>
-            <a class="btn btn-primary" href="{{ route('register') }}">@lang('Register')</a>
+            <a href="{{ route('register') }}" class="btn btn-primary">Register</a>
+            <a href="{{ route('login') }}" class="btn btn-secondary">Login</a>
         @endauth
+
     </div>
 </div>

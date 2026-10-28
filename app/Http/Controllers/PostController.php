@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Image;
+use App\Models\Tag;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -13,7 +17,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        /** @var App\Models\User $user */
+        $user = Auth::user();
+        $posts = $user->posts()->latest()->paginate(16);
+        return view('posts.index', compact('posts'));
     }
 
     /**
@@ -21,7 +28,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $tags = Tag::all();
+        return view('posts.create', compact('tags'));
     }
 
     /**
@@ -29,7 +37,22 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $post = new Post($request->validated());
+        // $post->title = $request->input('title');
+        // $post->body = $request->input('body');
+        $post->user()->associate(Auth::user());
+        $post->save();
+        foreach($request->file('images') ?? [] as $file) {
+            $image = $file->store('', ['disk' => 'public']);
+            $url = Storage::url($image);
+
+            $image = new Image();
+            $image->path = $url;
+            $image->post()->associate($post);
+            $image->save();
+        }
+        $post->tags()->attach($request->input('tags'));
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -37,7 +60,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -45,7 +68,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -53,7 +76,11 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        // $post->title = $request->validated('title');
+        // $post->body = $request->validated('body');
+        //$post->fill($request->validated());
+        $post->update($request->validated());
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -61,6 +88,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('posts.index');
     }
 }
